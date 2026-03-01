@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tourist Zone — Pakistan Adventures</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --emerald: #0d5c3a;
+    --gold: #c9a227;
+    --sand: #f4ede1;
+    --deep: #0a1628;
+    --cream: #faf7f2;
+    --accent: #e8401c;
+    --muted: #6b7280;
+    --white: #ffffff;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--deep); color: var(--white); overflow-x: hidden; cursor: none; }
+  .cursor { width: 12px; height: 12px; background: var(--gold); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99999; transition: transform 0.15s ease; mix-blend-mode: difference; }
+  .cursor-follower { width: 36px; height: 36px; border: 1.5px solid var(--gold); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99998; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); mix-blend-mode: difference; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+  nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, rgba(10,22,40,0.95), transparent); backdrop-filter: blur(2px); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; color: var(--gold); text-decoration: none; }
+  .logo span { color: var(--white); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta { background: var(--gold) !important; color: var(--deep) !important; padding: 10px 24px; border-radius: 2px; font-weight: 600 !important; }
+  .hero { height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; }
+  .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,22,40,0.9) 0%, rgba(13,92,58,0.4) 50%, rgba(10,22,40,0.85) 100%), url('https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=1800&q=80') center/cover; transform: scale(1.1); animation: heroZoom 20s ease-in-out infinite alternate; }
+  @keyframes heroZoom { from { transform: scale(1.1); } to { transform: scale(1.2) translateX(-1%); } }
+  .hero-content { position: relative; z-index: 2; padding: 0 60px; max-width: 800px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(201,162,39,0.15); border: 1px solid rgba(201,162,39,0.4); color: var(--gold); padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; animation: fadeInUp 0.8s ease forwards; opacity: 0; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; line-height: 0.95; margin-bottom: 28px; animation: fadeInUp 0.8s 0.2s ease forwards; opacity: 0; }
+  .hero-title .line2 { font-style: italic; color: var(--gold); }
+  .hero-sub { font-size: 1.1rem; color: rgba(255,255,255,0.7); max-width: 480px; line-height: 1.7; margin-bottom: 40px; animation: fadeInUp 0.8s 0.4s ease forwards; opacity: 0; }
+  .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeInUp 0.8s 0.6s ease forwards; opacity: 0; }
+  .btn-primary { background: var(--gold); color: var(--deep); padding: 16px 36px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: none; border-radius: 2px; transition: all 0.3s; text-decoration: none; display: inline-block; }
+  .btn-primary:hover { background: var(--accent); color: var(--white); transform: translateY(-2px); }
+  .btn-ghost { color: var(--white); padding: 16px 36px; border: 1px solid rgba(255,255,255,0.3); font-size: 0.9rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; cursor: none; border-radius: 2px; text-decoration: none; transition: all 0.3s; background: transparent; display: inline-block; }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-scroll { position: absolute; bottom: 40px; left: 60px; display: flex; align-items: center; gap: 16px; color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; z-index: 2; }
+  .scroll-line { width: 60px; height: 1px; background: var(--gold); position: relative; overflow: hidden; }
+  .scroll-line::after { content: ''; position: absolute; left: -100%; top: 0; width: 100%; height: 100%; background: var(--white); animation: scrollLine 2s ease infinite; }
+  @keyframes scrollLine { to { left: 100%; } }
+  .hero-stats { position: absolute; right: 60px; bottom: 60px; display: flex; gap: 40px; z-index: 2; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .search-section { background: var(--cream); padding: 40px 60px; position: relative; z-index: 10; }
+  .search-bar { display: flex; background: var(--white); border-radius: 4px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.12); max-width: 1100px; margin: 0 auto; }
+  .search-field { flex: 1; display: flex; align-items: center; padding: 20px 28px; border-right: 1px solid #e5e7eb; gap: 12px; }
+  .search-field label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+  .search-field select, .search-field input { border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; color: var(--deep); background: transparent; width: 100%; cursor: pointer; }
+  .search-btn { background: var(--emerald); color: var(--white); border: none; padding: 0 40px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: none; transition: background 0.3s; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .search-btn:hover { background: var(--deep); }
+  .section { padding: 100px 60px; }
+  .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
+  .section-tag { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .view-all { color: var(--gold); text-decoration: none; font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 2px; transition: all 0.3s; white-space: nowrap; }
+  .view-all:hover { color: var(--white); border-color: var(--white); }
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 48px; flex-wrap: wrap; }
+  .filter-tab { padding: 10px 24px; border: 1px solid rgba(255,255,255,0.15); border-radius: 40px; background: transparent; color: rgba(255,255,255,0.6); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: none; transition: all 0.3s; }
+  .filter-tab.active, .filter-tab:hover { background: var(--gold); border-color: var(--gold); color: var(--deep); font-weight: 600; }
+  .destinations-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .dest-card { position: relative; border-radius: 8px; overflow: hidden; cursor: none; background: #111b2a; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  .dest-card:hover { transform: translateY(-8px); }
+  .dest-card.featured { grid-column: span 2; }
+  .dest-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform 0.6s ease; filter: brightness(0.85); display: block; }
+  .dest-card:hover .dest-img { transform: scale(1.06); filter: brightness(0.75); }
+  .dest-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.95) 0%, transparent 50%); pointer-events: none; }
+  .dest-body { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; }
+  .dest-region { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .dest-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+  .dest-card.featured .dest-name { font-size: 2.4rem; }
+  .dest-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .dest-rating { color: var(--gold); font-weight: 600; }
+  .dest-footer { display: flex; justify-content: space-between; align-items: center; }
+  .dest-price { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+  .dest-price strong { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); letter-spacing: 1px; }
+  .dest-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 10px 20px; border-radius: 4px; font-size: 0.8rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; cursor: none; transition: all 0.3s; text-decoration: none; }
+  .dest-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--deep); }
+  .dest-badge { position: absolute; top: 20px; left: 20px; background: var(--accent); color: var(--white); padding: 4px 12px; border-radius: 2px; font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .dest-badge.green { background: var(--emerald); }
+  .dest-badge.gold { background: var(--gold); color: var(--deep); }
+  .packages-section { background: var(--cream); color: var(--deep); }
+  .packages-section .section-title em { color: var(--emerald); }
+  .packages-section .section-tag { color: var(--emerald); }
+  .packages-section .view-all { color: var(--emerald); border-color: var(--emerald); }
+  .packages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .pkg-card { background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 30px rgba(0,0,0,0.06); transition: all 0.4s; cursor: none; position: relative; }
+  .pkg-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+  .pkg-card.popular { border: 2px solid var(--gold); }
+  .popular-badge { position: absolute; top: 0; right: 24px; background: var(--gold); color: var(--deep); padding: 6px 16px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border-radius: 0 0 6px 6px; }
+  .pkg-img { width: 100%; height: 200px; object-fit: cover; display: block; }
+  .pkg-body { padding: 28px; }
+  .pkg-days { display: inline-block; background: rgba(13,92,58,0.1); color: var(--emerald); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .pkg-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--deep); margin-bottom: 8px; }
+  .pkg-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .pkg-includes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+  .pkg-include-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); }
+  .pkg-include-item::before { content: '✓'; color: var(--emerald); font-weight: 700; }
+  .pkg-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+  .pkg-price { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--deep); line-height: 1; }
+  .pkg-price span { font-size: 1rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .pkg-btn { background: var(--emerald); color: var(--white); border: none; padding: 12px 24px; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: none; transition: all 0.3s; text-decoration: none; display: inline-block; }
+  .pkg-btn:hover { background: var(--deep); }
+  .pkg-card.popular .pkg-btn { background: var(--gold); color: var(--deep); }
+  .itinerary-section { background: #0d1f35; }
+  .itinerary-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .itinerary-img { position: relative; }
+  .itinerary-img img { width: 100%; border-radius: 8px; object-fit: cover; height: 560px; }
+  .itinerary-float { position: absolute; bottom: -24px; right: -24px; background: var(--gold); color: var(--deep); padding: 24px; border-radius: 8px; width: 180px; text-align: center; font-weight: 700; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .itinerary-float-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; }
+  .itinerary-float-text { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+  .day-item { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); cursor: none; transition: all 0.3s; }
+  .day-item:hover { padding-left: 8px; }
+  .day-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); line-height: 1; min-width: 50px; }
+  .day-content { flex: 1; }
+  .day-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+  .day-desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+  .day-duration { font-size: 0.75rem; color: var(--gold); font-weight: 500; white-space: nowrap; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10,22,40,0.95); z-index: 9000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; backdrop-filter: blur(12px); padding: 20px; }
+  .modal-overlay.active { opacity: 1; pointer-events: all; }
+  .modal { background: #0d1f35; border-radius: 12px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; transform: translateY(30px) scale(0.96); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); border: 1px solid rgba(201,162,39,0.2); }
+  .modal-overlay.active .modal { transform: translateY(0) scale(1); }
+  .modal-header { position: relative; height: 260px; overflow: hidden; border-radius: 12px 12px 0 0; }
+  .modal-header img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
+  .modal-header-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px; background: linear-gradient(to top, rgba(13,31,53,1) 0%, transparent 100%); }
+  .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--white); border-radius: 50%; cursor: none; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s; z-index: 1; }
+  .modal-close:hover { background: var(--accent); }
+  .modal-body { padding: 32px; }
+  .modal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .modal-stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 16px; text-align: center; }
+  .modal-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); }
+  .modal-stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; text-transform: uppercase; }
+  .modal-section-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 16px; margin-top: 24px; }
+  .itinerary-list { list-style: none; }
+  .itinerary-list li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.88rem; color: rgba(255,255,255,0.8); }
+  .li-day { background: var(--gold); color: var(--deep); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
+  .includes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .include-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.75); padding: 8px 12px; background: rgba(255,255,255,0.03); border-radius: 4px; }
+  .include-item::before { content: '✓'; color: var(--gold); font-weight: 700; }
+  .modal-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+  .modal-price { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+  .modal-price span { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.5); }
+  .book-btn { background: var(--gold); color: var(--deep); border: none; padding: 16px 40px; border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; cursor: none; transition: all 0.3s; letter-spacing: 1px; text-transform: uppercase; }
+  .book-btn:hover { background: var(--accent); color: var(--white); }
+  .testimonials { background: #060f1a; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .testi-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 32px; transition: all 0.3s; }
+  .testi-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(201,162,39,0.3); transform: translateY(-4px); }
+  .testi-stars { color: var(--gold); font-size: 1rem; margin-bottom: 16px; letter-spacing: 2px; }
+  .testi-text { font-size: 0.92rem; line-height: 1.7; color: rgba(255,255,255,0.75); margin-bottom: 24px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--emerald); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+  .testi-name { font-weight: 600; font-size: 0.9rem; }
+  .testi-loc { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+  .cta-section { background: linear-gradient(135deg, var(--emerald) 0%, #073d27 100%); padding: 100px 60px; text-align: center; position: relative; overflow: hidden; }
+  .cta-section::before { content: 'PAKISTAN'; font-family: 'Bebas Neue', sans-serif; font-size: 20vw; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.04); white-space: nowrap; pointer-events: none; letter-spacing: 10px; }
+  .cta-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 900; margin-bottom: 20px; position: relative; }
+  .cta-sub { font-size: 1.1rem; color: rgba(255,255,255,0.75); max-width: 500px; margin: 0 auto 40px; position: relative; }
+  .cta-form { display: flex; gap: 0; max-width: 500px; margin: 0 auto; position: relative; }
+  .cta-input { flex: 1; padding: 18px 24px; border: none; border-radius: 4px 0 0 4px; font-family: 'DM Sans', sans-serif; font-size: 1rem; outline: none; }
+  .cta-submit { background: var(--gold); color: var(--deep); border: none; padding: 18px 32px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; border-radius: 0 4px 4px 0; cursor: none; transition: all 0.3s; white-space: nowrap; }
+  .cta-submit:hover { background: var(--deep); color: var(--white); }
+  footer { background: #030a14; padding: 80px 60px 40px; border-top: 1px solid rgba(255,255,255,0.05); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--gold); letter-spacing: 4px; margin-bottom: 16px; }
+  .footer-logo span { color: var(--white); }
+  .footer-desc { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 300px; }
+  .footer-heading { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; font-weight: 600; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.88rem; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { opacity: 0; transform: translateY(40px); transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .toast { position: fixed; bottom: 40px; right: 40px; background: var(--emerald); color: var(--white); padding: 16px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; z-index: 99999; transform: translateY(100px); opacity: 0; transition: all 0.4s; border-left: 4px solid var(--gold); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .loader { position: fixed; inset: 0; background: var(--deep); z-index: 99999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; transition: opacity 0.6s, visibility 0.6s; }
+  .loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--gold); letter-spacing: 6px; animation: pulse 1.5s ease infinite; }
+  .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .loader-progress { height: 100%; background: var(--gold); width: 0%; transition: width 0.1s linear; border-radius: 2px; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* Admin Notification Panel */
+  .notif-btn { position: fixed; top: 20px; right: 20px; z-index: 99999; background: var(--gold); color: var(--deep); border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; }
+  .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.65rem; font-weight: 700; display: none; align-items: center; justify-content: center; }
+  .notif-panel { position: fixed; top: 75px; right: 20px; z-index: 99998; background: #0d1f35; border: 1px solid rgba(201,162,39,0.3); border-radius: 12px; width: 300px; max-height: 400px; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.4); display: none; }
+  .notif-header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.85rem; font-weight: 600; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .notif-empty { padding: 24px; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+
+  /* Setup Guide */
+  .setup-guide { position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #0d1f35; border: 1px solid rgba(201,162,39,0.4); border-radius: 12px; padding: 16px 20px; max-width: 320px; font-size: 0.8rem; color: rgba(255,255,255,0.8); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .setup-guide-title { color: var(--gold); font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .setup-guide code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 3px; font-family: monospace; color: var(--gold); font-size: 0.75rem; }
+  .setup-guide-close { float: right; cursor: pointer; color: rgba(255,255,255,0.4); font-size: 1rem; background: none; border: none; color: rgba(255,255,255,0.5); }
+  @media (max-width: 1024px) { nav { padding: 16px 30px; } .section { padding: 70px 30px; } .destinations-grid { grid-template-columns: 1fr 1fr; } .dest-card.featured { grid-column: span 2; } .packages-grid { grid-template-columns: 1fr 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; } .hero-content { padding: 0 30px; } .search-section { padding: 30px; } .itinerary-layout { grid-template-columns: 1fr; gap: 40px; } }
+  /* Booking form selects */
+  #bookingForm select option { background: #0d1f35; color: white; }
+  #bookingForm select { -webkit-appearance: none; appearance: none; }
+  @media (max-width: 768px) { .nav-links { display: none; } .destinations-grid { grid-template-columns: 1fr; } .dest-card.featured { grid-column: span 1; } .packages-grid { grid-template-columns: 1fr; } .testimonials-grid { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr; } .search-bar { flex-direction: column; } .search-field { border-right: none; border-bottom: 1px solid #e5e7eb; } .search-btn { padding: 20px; justify-content: center; } .hero-stats { display: none; } .cta-form { flex-direction: column; } .cta-input { border-radius: 4px; } .cta-submit { border-radius: 4px; } }
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="loader-logo">TOURIST ZONE</div>
+  <div class="loader-bar"><div class="loader-progress" id="loaderProgress"></div></div>
+  <div style="font-size:0.75rem;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Discovering Pakistan...</div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+<div class="toast" id="toast"></div>
+
+<!-- Admin Notification Bell -->
+<button class="notif-btn" onclick="toggleNotifPanel()" title="Admin Notifications" style="position:fixed;top:80px;right:20px;z-index:99999;cursor:pointer;">
+  🔔
+  <span class="notif-badge" id="notifBadge" style="position:absolute;top:-5px;right:-5px;background:#e8401c;color:white;border-radius:50%;width:20px;height:20px;font-size:0.65rem;font-weight:700;display:none;align-items:center;justify-content:center;"></span>
+</button>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-header">🔔 Admin Notifications</div>
+  <div id="notifList">
+    <div class="notif-empty">Abhi koi notification nahi</div>
+  </div>
+</div>
+
+<!-- Setup Guide -->
+<div class="setup-guide" id="setupGuide">
+  <div class="setup-guide-title">
+    🛠️ PHP Setup Guide
+    <button class="setup-guide-close" onclick="document.getElementById('setupGuide').style.display='none'">✕</button>
+  </div>
+  <ol style="padding-left:16px;line-height:1.9;color:rgba(255,255,255,0.7);">
+    <li>Sab files server pe upload karein</li>
+    <li><code>php/config.php</code> mein DB info fill karein</li>
+    <li><code>php/setup.php</code> browser mein open karein (tables banenge)</li>
+    <li><code>ADMIN_EMAIL</code> mein apna email daalo</li>
+    <li>Setup ke baad <code>setup.php</code> delete kar dein ✅</li>
+  </ol>
+  <div style="margin-top:10px;color:rgba(255,255,255,0.4);font-size:0.72rem;">Ab Demo Mode mein chal raha hai — PHP server connect ho toh live ho jaega</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <img id="modalImg" src="" alt="">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-header-content">
+        <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;" id="modalRegion"></div>
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;" id="modalTitle"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-stat"><div class="modal-stat-val" id="modalDays"></div><div class="modal-stat-label">Days</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" id="modalPeople"></div><div class="modal-stat-label">Max People</div></div>
+        <div class="modal-stat"><div class="modal-stat-val" id="modalDiff"></div><div class="modal-stat-label">Difficulty</div></div>
+      </div>
+      <p style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.7;" id="modalDesc"></p>
+      <div class="modal-section-title">Day-by-Day Itinerary</div>
+      <ul class="itinerary-list" id="modalItinerary"></ul>
+      <div class="modal-section-title">What's Included</div>
+      <div class="includes-grid" id="modalIncludes"></div>
+      <div class="modal-footer">
+        <div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Starting from</div>
+          <div class="modal-price" id="modalPrice"></div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">per person</div>
+        </div>
+        <button class="book-btn" onclick="bookNow()">Book This Trip</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== BOOKING FORM MODAL ====== -->
+<div class="modal-overlay" id="bookingFormOverlay" style="z-index:9100;">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header" style="height:120px;background:linear-gradient(135deg,var(--emerald),var(--deep));">
+      <button class="modal-close" onclick="closeBookingForm()" style="cursor:pointer;">✕</button>
+      <div class="modal-header-content" style="background:none;">
+        <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">📅 Trip Booking</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;" id="bookingPackageName">Package Name</div>
+        <div style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:4px;">Price: <span style="color:var(--gold);font-weight:600;" id="bookingPackagePrice"></span> / person</div>
+      </div>
+    </div>
+    <div class="modal-body" style="padding:28px;">
+      <div id="bookingFormError" style="display:none;background:rgba(232,64,28,0.15);border:1px solid var(--accent);border-radius:6px;padding:12px 16px;margin-bottom:20px;font-size:0.85rem;color:#ff8f76;"></div>
+      <form id="bookingForm" onsubmit="submitBooking(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Full Name *</label>
+            <input type="text" id="bkName" placeholder="Ahmed Raza" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Email Address *</label>
+            <input type="email" id="bkEmail" placeholder="ahmed@gmail.com" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">WhatsApp Number *</label>
+            <input type="tel" id="bkPhone" placeholder="+92-300-1234567" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Departure Date *</label>
+            <input type="date" id="bkDate" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Number of Persons *</label>
+            <select id="bkPersons" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;">
+              <option value="">Select...</option>
+              <option>1 Person</option><option>2 Persons</option><option>3 Persons</option>
+              <option>4 Persons</option><option>5 Persons</option><option>6-10 Persons</option><option>10+ Persons</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">City (From)</label>
+            <input type="text" id="bkCity" placeholder="Islamabad" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <label style="display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;">Special Requirements (Optional)</label>
+          <textarea id="bkNotes" placeholder="e.g., vegetarian meals, wheelchair access, room type..." rows="3" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;resize:vertical;transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;padding-top:4px;">
+          <button type="button" onclick="closeBookingForm()" style="flex:1;padding:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)'">Cancel</button>
+          <button type="submit" id="bkSubmitBtn" style="flex:2;padding:14px;background:var(--gold);border:none;color:var(--deep);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;">✓ Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <a href="#" class="logo">TOURIST<span>ZONE</span></a>
+  <ul class="nav-links">
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#packages">Packages</a></li>
+    <li><a href="#itinerary">Itineraries</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Pakistan's #1 Travel Platform</div>
+    <h1 class="hero-title">Discover<br><span class="line2">Pakistan's</span><br>Wonders</h1>
+    <p class="hero-sub">From the misty heights of Naran to the ancient streets of Lahore — unforgettable departures, expertly crafted.</p>
+    <div class="hero-actions">
+      <a href="#packages" class="btn-primary">Explore Packages</a>
+      <a href="#destinations" class="btn-ghost">View Destinations</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Scroll to explore</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num" data-target="250">0</div><div class="stat-label">Tours Done</div></div>
+    <div class="stat"><div class="stat-num" data-target="40">0</div><div class="stat-label">Destinations</div></div>
+    <div class="stat"><div class="stat-num" data-target="5000">0</div><div class="stat-label">Travellers</div></div>
+  </div>
+</section>
+
+<div class="search-section">
+  <div class="search-bar">
+    <div class="search-field">
+      <span>📍</span>
+      <div><label>Destination</label>
+        <select id="searchDest">
+          <option>Murree, Punjab</option><option>Naran, KPK</option><option>Hunza, Gilgit</option>
+          <option>Skardu, Gilgit</option><option>Swat, KPK</option><option>Lahore, Punjab</option>
+          <option>Azad Kashmir</option><option>Neelum Valley</option><option>Fairy Meadows</option><option>Chitral, KPK</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-field">
+      <span>📅</span>
+      <div><label>Departure Date</label><input type="date"></div>
+    </div>
+    <div class="search-field">
+      <span>👥</span>
+      <div><label>Travellers</label>
+        <select><option>1 Person</option><option>2 Persons</option><option>3-5 Persons</option><option>6-10 Persons</option><option>Group 10+</option></select>
+      </div>
+    </div>
+    <div class="search-field" style="border-right:none;">
+      <span>🗓</span>
+      <div><label>Duration</label>
+        <select><option>1-3 Days</option><option>4-7 Days</option><option>8-14 Days</option><option>15+ Days</option></select>
+      </div>
+    </div>
+    <button class="search-btn" onclick="performSearch()">🔍 Search</button>
+  </div>
+</div>
+
+<section class="section" id="destinations">
+  <div class="section-header fade-in">
+    <div><div class="section-tag">✦ Top Destinations</div><h2 class="section-title">Pakistan's Most <em>Breathtaking</em><br>Places</h2></div>
+    <a href="#" class="view-all">View All →</a>
+  </div>
+  <div class="filter-tabs fade-in">
+    <button class="filter-tab active" onclick="filterDest(this,'all')">All</button>
+    <button class="filter-tab" onclick="filterDest(this,'north')">Northern Areas</button>
+    <button class="filter-tab" onclick="filterDest(this,'punjab')">Punjab</button>
+    <button class="filter-tab" onclick="filterDest(this,'kpk')">KPK</button>
+    <button class="filter-tab" onclick="filterDest(this,'azk')">Azad Kashmir</button>
+  </div>
+  <div class="destinations-grid" id="destGrid"></div>
+</section>
+
+<section class="section packages-section" id="packages">
+  <div class="section-header fade-in">
+    <div><div class="section-tag">✦ Travel Packages</div><h2 class="section-title" style="color:var(--deep);">Choose Your <em>Perfect</em><br>Adventure Package</h2></div>
+    <a href="#" class="view-all">All Packages →</a>
+  </div>
+  <div class="packages-grid" id="packagesGrid"></div>
+</section>
+
+<section class="section itinerary-section" id="itinerary">
+  <div class="itinerary-layout fade-in">
+    <div class="itinerary-img">
+      <img src="https://images.unsplash.com/photo-1598461321946-78e6e3da6cf6?w=800&q=80" alt="Fairy Meadows">
+      <div class="itinerary-float"><div class="itinerary-float-num">7</div><div class="itinerary-float-text">Days Tour</div><div style="font-size:0.85rem;margin-top:4px;">Fairy Meadows</div></div>
+    </div>
+    <div>
+      <div class="section-tag">✦ Sample Itinerary</div>
+      <h2 class="section-title" style="margin-bottom:16px;">Fairy Meadows<br><em>& Nanga Parbat</em></h2>
+      <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;line-height:1.7;margin-bottom:32px;">A journey to the base of the world's 9th highest peak. Meadows, glaciers, and absolute serenity await in this 7-day expedition.</p>
+      <div>
+        <div class="day-item"><div class="day-num">01</div><div class="day-content"><div class="day-title">Islamabad to Raikot Bridge</div><div class="day-desc">Depart Islamabad, drive through KKH, arrive Raikot Bridge.</div></div><div class="day-duration">~8 hrs</div></div>
+        <div class="day-item"><div class="day-num">02</div><div class="day-content"><div class="day-title">Jeep Ride to Tattu Village</div><div class="day-desc">Thrilling jeep safari up mountain trail. Trek to Fairy Meadows begins.</div></div><div class="day-duration">~5 hrs</div></div>
+        <div class="day-item"><div class="day-num">03</div><div class="day-content"><div class="day-title">Fairy Meadows Camp</div><div class="day-desc">First view of Nanga Parbat. Evening bonfire under stars.</div></div><div class="day-duration">Full Day</div></div>
+        <div class="day-item"><div class="day-num">04–05</div><div class="day-content"><div class="day-title">Nanga Parbat Base Camp Trek</div><div class="day-desc">Guided trek to base camp at 3,600m. Glacier views & photography.</div></div><div class="day-duration">2 Days</div></div>
+        <div class="day-item"><div class="day-num">06–07</div><div class="day-content"><div class="day-title">Return & Islamabad</div><div class="day-desc">Descend, drive back via Chilas. Arrive Islamabad with memories of a lifetime.</div></div><div class="day-duration">Return</div></div>
+      </div>
+      <div style="margin-top:32px;display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">Starting from</div><div style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);line-height:1;">PKR 45,000 <span style="font-size:1rem;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,0.5);">/person</span></div></div>
+        <button class="btn-primary" onclick="openBookingForm('Fairy Meadows Expedition', 'PKR 45,000')">Book This Tour</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section testimonials" id="reviews">
+  <div class="section-header fade-in"><div><div class="section-tag">✦ Traveller Reviews</div><h2 class="section-title">Words from Our <em>Happy</em><br>Adventurers</h2></div></div>
+  <div class="testimonials-grid">
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★★</div><p class="testi-text">"The Hunza Valley trip was life-changing. Tourist Zone handled everything perfectly — transport, guesthouses, every detail."</p><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Ahmed Raza</div><div class="testi-loc">📍 Karachi</div></div></div></div>
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★★</div><p class="testi-text">"Murree package mein jo hospitality mili woh incredible thi. Raat ko snowfall aur subah ka nazara — kabhi nahi bhoolenge!"</p><div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sara Khan</div><div class="testi-loc">📍 Lahore</div></div></div></div>
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★☆</div><p class="testi-text">"Naran Kaghan trip was beyond expectations. Affordable 7-day package and the guide knew every hidden spot. Perfect for families!"</p><div class="testi-author"><div class="testi-avatar">F</div><div><div class="testi-name">Farhan Malik</div><div class="testi-loc">📍 Islamabad</div></div></div></div>
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★★</div><p class="testi-text">"Skardu was on my bucket list for years. The 10-day Baltistan package was the most seamless travel experience I've ever had."</p><div class="testi-author"><div class="testi-avatar">Z</div><div><div class="testi-name">Zara Hussain</div><div class="testi-loc">📍 Rawalpindi</div></div></div></div>
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★★</div><p class="testi-text">"Neelum Valley honeymoon package was perfect! Romantic log cabins, fresh mountain air, and river sounds at night. Magical!"</p><div class="testi-author"><div class="testi-avatar">U</div><div><div class="testi-name">Usman & Aisha</div><div class="testi-loc">📍 Faisalabad</div></div></div></div>
+    <div class="testi-card fade-in"><div class="testi-stars">★★★★☆</div><p class="testi-text">"Fairy Meadows trek was challenging but rewarding. Nanga Parbat base camp at sunrise is something I'll carry forever."</p><div class="testi-author"><div class="testi-avatar">M</div><div><div class="testi-name">Moiz Ahmed</div><div class="testi-loc">📍 Peshawar</div></div></div></div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <h2 class="cta-title fade-in">Ready for Your<br>Next Adventure?</h2>
+  <p class="cta-sub fade-in">Subscribe for exclusive early-bird deals, new destinations, and seasonal departures directly to your inbox.</p>
+  <div class="cta-form fade-in">
+    <input type="email" class="cta-input" id="emailInput" placeholder="Enter your email address...">
+    <button class="cta-submit" id="subscribeBtn" onclick="subscribeEmail()">Get Deals</button>
+  </div>
+  <div style="margin-top:20px;font-size:0.78rem;color:rgba(255,255,255,0.4);" id="subscriberCount">No spam. 5,000+ travellers already subscribed.</div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">TOURIST<span>ZONE</span></div>
+      <p class="footer-desc">Pakistan's most trusted travel agency — crafting unforgettable adventures across the world's most breathtaking landscapes since 2018.</p>
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <a href="#" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0.9rem;">📘</a>
+        <a href="#" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0.9rem;">📸</a>
+        <a href="#" style="width:36px;height:36px;background:rgba(255,255,255,0.06);border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0.9rem;">▶</a>
+      </div>
+    </div>
+    <div><div class="footer-heading">Destinations</div><ul class="footer-links"><li><a href="#">Murree & Nathiagali</a></li><li><a href="#">Hunza Valley</a></li><li><a href="#">Naran & Kaghan</a></li><li><a href="#">Skardu & Shigar</a></li><li><a href="#">Swat Valley</a></li><li><a href="#">Neelum Valley</a></li></ul></div>
+    <div><div class="footer-heading">Quick Links</div><ul class="footer-links"><li><a href="#">About Us</a></li><li><a href="#">All Packages</a></li><li><a href="#">Group Tours</a></li><li><a href="#">Honeymoon Trips</a></li><li><a href="#">Corporate Tours</a></li><li><a href="#">Blog & Tips</a></li></ul></div>
+    <div><div class="footer-heading">Contact</div><ul class="footer-links"><li><a href="#">📞 +92-300-1234567</a></li><li><a href="#">✉️ <span class="__cf_email__" data-cfemail="5a33343c351a2e352f2833292e2035343f742a31">[email&#160;protected]</span></a></li><li><a href="#">📍 Blue Area, Islamabad</a></li><li><a href="#">⏰ Mon-Sat 9am-7pm</a></li><li><a href="#">💬 WhatsApp Support</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 Tourist Zone Pakistan. All rights reserved.</div>
+    <div style="display:flex;gap:24px;"><a href="#" style="color:rgba(255,255,255,0.3);text-decoration:none;">Privacy Policy</a><a href="#" style="color:rgba(255,255,255,0.3);text-decoration:none;">Terms of Service</a></div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const destinations = [
+  { id:1, name:"Hunza Valley", region:"Gilgit-Baltistan", category:"north", img:"https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=800&q=80", rating:4.9, reviews:312, price:35000, badge:"Top Pick", badgeClass:"gold", featured:true, desc:"The legendary valley of apricots and ancient forts, nestled between the Karakoram ranges. A dreamland of turquoise lakes, blossoming orchards, and snow-capped peaks.", days:6, people:15, diff:"Easy", itinerary:["Islamabad → Gilgit by air or road via KKH","Gilgit → Aliabad, explore local bazaar & culture","Karimabad, Baltit Fort & Eagle's Nest sunset","Attabad Lake boat ride & Passu Cones trek","Khunjerab Pass visit (4,693m) — China border","Return to Islamabad via KKH"], includes:["AC Van Transport","Hotel (3-star)","Daily Breakfast","Licensed Guide","Permit Fees","Boat Ride Tickets"] },
+  { id:2, name:"Murree & Nathiagali", region:"Punjab Hills", category:"punjab", img:"https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=800&q=80", rating:4.7, reviews:581, price:12000, badge:"Best Value", badgeClass:"", featured:false, desc:"Pakistan's most beloved hill station — pine forests, colonial architecture, and refreshing cold mountain air just 2 hours from Islamabad.", days:3, people:20, diff:"Easy", itinerary:["Islamabad → Murree, Mall Road evening walk","Patriata Chair Lift, Nathiagali forest trek","Ayubia National Park, return to Islamabad"], includes:["AC Bus Transport","Hotel (2-star) 2 Nights","Daily Breakfast","Expert Guide","Entry Tickets"] },
+  { id:3, name:"Naran & Kaghan Valley", region:"KPK", category:"kpk", img:"https://images.unsplash.com/photo-1583417267826-aebc4d1542e1?w=800&q=80", rating:4.8, reviews:449, price:22000, badge:"Trending", badgeClass:"", featured:false, desc:"Crystal-clear Saif-ul-Mulook lake, gushing waterfalls, and the magical Babusar Pass connecting to Gilgit-Baltistan.", days:5, people:18, diff:"Moderate", itinerary:["Islamabad → Balakot, roadside waterfalls","Kaghan → Naran via Shogran meadows","Lake Saif-ul-Mulook jeep + trek","Babusar Pass (4,173m), Chilas stopover","Return to Islamabad via Silk Road"], includes:["4x4 Jeep Transport","Camping + Hotel Mix","All Meals Included","Licensed Guide","Jeep Safari"] },
+  { id:4, name:"Skardu & Baltistan", region:"Gilgit-Baltistan", category:"north", img:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80", rating:5.0, reviews:198, price:55000, badge:"Premium", badgeClass:"", featured:false, desc:"Gateway to K2 — ancient forts, cold deserts, emerald lakes, and glacier highways in the world's most dramatic mountain landscape.", days:10, people:10, diff:"Hard", itinerary:["Islamabad → Skardu by PIA flight","Skardu Fort, Satpara Lake, Cold Desert","Shangrila Resort (Lower Kachura Lake)","Shigar Valley & UNESCO Shigar Fort","Deosai Plains 4WD adventure","Upper Kachura & Manthoka Falls","Drive toward Concordia approach","Baltoro Glacier trek Day 1","Baltoro Glacier trek Day 2","K2 viewpoint, return Skardu & fly ISB"], includes:["PIA Flights (ISB-SKT)","4x4 Transport","Camping Gear","All Meals","Expert Guide","Porters","Rescue Insurance"] },
+  { id:5, name:"Neelum Valley", region:"Azad Kashmir", category:"azk", img:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80", rating:4.8, reviews:367, price:18000, badge:"Romantic", badgeClass:"green", featured:false, desc:"Where rivers meet mountains — lush forests, turquoise streams, and fairy-tale wooden villages perfect for couples and families.", days:4, people:15, diff:"Easy", itinerary:["Rawalpindi → Muzaffarabad → Kutton village","Keran village, Neelum River camping","Sharda Fort & ancient university ruins","Arang Kel via cable car or 2hr trek"], includes:["Coaster Transport","Log Cabin Stay","Breakfast & Dinner","Local Guide","Cable Car Ticket"] },
+  { id:6, name:"Swat Valley", region:"KPK", category:"kpk", img:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80", rating:4.7, reviews:412, price:16000, badge:"Cultural", badgeClass:"", featured:false, desc:"The Switzerland of Pakistan — Buddhist heritage sites, alpine meadows, and ancient civilizations in a stunning green valley.", days:4, people:20, diff:"Easy", itinerary:["Islamabad → Mingora, Swat Museum visit","Malam Jabba ski resort & chairlift","Kalam Valley, Ushu Forest walk","Mahodand Lake jeep + short trek"], includes:["AC Van Transport","Hotel (3-star)","Daily Breakfast","Cultural Guide","Jeep Kalam-Mahodand"] }
+];
+
+const packages = [
+  { id:'p1', name:"Islamabad Weekend Escape", dest:"Murree & Nathiagali", days:3, nights:2, price:12000, img:"https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=600&q=80", desc:"Perfect 3-day getaway from Islamabad to the lush pine hills of Murree. Great for families and first-time hill visitors.", popular:false, includes:["AC Transport","Hotel 2 Nights","Breakfast Daily","Guide","Chair Lift Ticket"], departure:"Every Saturday" },
+  { id:'p2', name:"Northern Wonders Grand Tour", dest:"Hunza + Naran + Skardu", days:14, nights:13, price:95000, img:"https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=600&q=80", desc:"The ultimate 14-day journey through Pakistan's most spectacular northern regions — the trip of a lifetime.", popular:true, includes:["All Flights Included","Premium Hotels","All Meals","Expert Guide","4x4 Jeeps","All Permit Fees"], departure:"Every 1st of Month" },
+  { id:'p3', name:"Fairy Meadows Expedition", dest:"Nanga Parbat Base Camp", days:7, nights:6, price:45000, img:"https://images.unsplash.com/photo-1598461321946-78e6e3da6cf6?w=600&q=80", desc:"7-day trekking expedition to the base of Nanga Parbat — world's 9th highest peak. For the adventurous soul.", popular:false, includes:["KKH Transport","Camping Gear Provided","All Meals","Trek Guide","Jeep Safari","Rescue Insurance"], departure:"Fridays (June–Sep)" }
+];
+
+function renderDest(filter = 'all') {
+  const grid = document.getElementById('destGrid');
+  const filtered = filter === 'all' ? destinations : destinations.filter(d => d.category === filter);
+  grid.innerHTML = '';
+  filtered.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'dest-card' + (d.featured && filter === 'all' ? ' featured' : '');
+    card.innerHTML = `
+      ${d.badge ? `<div class="dest-badge ${d.badgeClass}">${d.badge}</div>` : ''}
+      <img class="dest-img" src="${d.img}" alt="${d.name}" loading="lazy">
+      <div class="dest-overlay"></div>
+      <div class="dest-body">
+        <div class="dest-region">✦ ${d.region}</div>
+        <div class="dest-name">${d.name}</div>
+        <div class="dest-meta">
+          <span class="dest-rating">★ ${d.rating}</span>
+          <span>${d.reviews} reviews</span>
+          <span>📅 ${d.days} days</span>
+        </div>
+        <div class="dest-footer">
+          <div class="dest-price">From <strong>PKR ${d.price.toLocaleString()}</strong></div>
+          <a href="#" class="dest-btn" onclick="openModal(${d.id}); return false;">View Trip →</a>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function filterDest(btn, cat) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDest(cat);
+}
+
+function renderPackages() {
+  const grid = document.getElementById('packagesGrid');
+  packages.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'pkg-card' + (p.popular ? ' popular' : '');
+    card.innerHTML = `
+      ${p.popular ? '<div class="popular-badge">⭐ Most Popular</div>' : ''}
+      <img class="pkg-img" src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="pkg-body">
+        <div class="pkg-days">${p.days} Days / ${p.nights} Nights</div>
+        <div class="pkg-name">${p.name}</div>
+        <div class="pkg-desc">${p.desc}</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">📅 ${p.departure}</div>
+        <div class="pkg-includes">${p.includes.map(i => `<div class="pkg-include-item">${i}</div>`).join('')}</div>
+        <div class="pkg-footer">
+          <div>
+            <div style="font-size:0.75rem;color:var(--muted);">Per Person</div>
+            <div class="pkg-price">PKR ${(p.price/1000).toFixed(0)}K <span>total</span></div>
+          </div>
+          <button class="pkg-btn" onclick="openBookingForm('${p.name}', 'PKR ${p.price.toLocaleString()}')">Book Now →</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function openModal(id) {
+  const d = destinations.find(x => x.id === id);
+  if (!d) return;
+  document.getElementById('modalImg').src = d.img;
+  document.getElementById('modalRegion').textContent = '✦ ' + d.region;
+  document.getElementById('modalTitle').textContent = d.name;
+  document.getElementById('modalDays').textContent = d.days;
+  document.getElementById('modalPeople').textContent = d.people;
+  document.getElementById('modalDiff').textContent = d.diff;
+  document.getElementById('modalDesc').textContent = d.desc;
+  document.getElementById('modalPrice').innerHTML = 'PKR ' + d.price.toLocaleString() + ' <span>/person</span>';
+  document.getElementById('modalItinerary').innerHTML = d.itinerary.map((it,i) => `<li><div class="li-day">${i+1}</div><div>${it}</div></li>`).join('');
+  document.getElementById('modalIncludes').innerHTML = d.includes.map(inc => `<div class="include-item">${inc}</div>`).join('');
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ===== SEARCH FUNCTION =====
+function performSearch() {
+  const dest = document.getElementById('searchDest').value;
+  const date = document.querySelector('input[type="date"]').value;
+  const persons = document.querySelectorAll('.search-bar select')[1].value;
+  const duration = document.querySelectorAll('.search-bar select')[2].value;
+
+  // Map destination to category
+  const destMap = {
+    'Murree, Punjab': 'punjab',
+    'Lahore, Punjab': 'punjab',
+    'Naran, KPK': 'kpk',
+    'Swat, KPK': 'kpk',
+    'Chitral, KPK': 'kpk',
+    'Hunza, Gilgit': 'north',
+    'Skardu, Gilgit': 'north',
+    'Fairy Meadows': 'north',
+    'Azad Kashmir': 'azk',
+    'Neelum Valley': 'azk'
+  };
+
+  const cat = destMap[dest] || 'all';
+
+  // Scroll to destinations
+  document.getElementById('destinations').scrollIntoView({ behavior: 'smooth' });
+
+  setTimeout(() => {
+    // Activate the right filter tab
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    const tabs = document.querySelectorAll('.filter-tab');
+    const tabMap = { 'all': 0, 'north': 1, 'punjab': 2, 'kpk': 3, 'azk': 4 };
+    if (tabs[tabMap[cat]]) tabs[tabMap[cat]].classList.add('active');
+    
+    renderDest(cat);
+    showToast(`🔍 ${dest} ke liye ${cat !== 'all' ? cat.toUpperCase() + ' ke' : ''} tours dikh rahe hain!`);
+  }, 600);
+}
+
+
+let currentBookingDest = null;
+let currentBookingPackage = null;
+
+function bookNow() {
+  // Get current destination from modal
+  const title = document.getElementById('modalTitle').textContent;
+  const price = document.getElementById('modalPrice').textContent.replace(' <span>/person</span>','');
+  currentBookingDest = { name: title, price: price };
+  closeModal();
+  openBookingForm(title, price);
+}
+
+function openBookingForm(packageName, price) {
+  document.getElementById('bookingPackageName').textContent = packageName;
+  document.getElementById('bookingPackagePrice').textContent = price;
+  document.getElementById('bookingFormOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBookingForm() {
+  document.getElementById('bookingFormOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  document.getElementById('bookingForm').reset();
+  document.getElementById('bookingFormError').style.display = 'none';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Cursor
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursorFollower');
+let mx = 0, my = 0, fx = 0, fy = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+function animateFoll() {
+  fx += (mx - fx - 18) * 0.12;
+  fy += (my - fy - 18) * 0.12;
+  follower.style.left = fx + 'px';
+  follower.style.top = fy + 'px';
+  requestAnimationFrame(animateFoll);
+}
+animateFoll();
+document.querySelectorAll('a,button,.dest-card,.pkg-card,.testi-card,.day-item').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2)'; follower.style.transform = 'scale(1.5)'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)'; follower.style.transform = 'scale(1)'; });
+});
+
+// Scroll animations
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// Counter animation
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = target / 60;
+    const iv = setInterval(() => {
+      current += step;
+      if (current >= target) { el.textContent = target.toLocaleString() + '+'; clearInterval(iv); }
+      else el.textContent = Math.floor(current).toLocaleString();
+    }, 25);
+  });
+}
+
+
+// ===== PHP API CONFIGURATION =====
+// Apne server ka path — same folder mein honi chahiye php/ folder
+const API_BASE = 'php/';
+
+// ===== SUBSCRIBE EMAIL → PHP Database =====
+async function subscribeEmail() {
+  const input = document.getElementById('emailInput');
+  const btn   = document.getElementById('subscribeBtn');
+  const email = input.value.trim();
+
+  if (!email) {
+    showToast('⚠️ Pehle email darj karein!');
+    input.focus();
+    return;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showToast('❌ Sahih email likhein (example@gmail.com)');
+    input.focus();
+    return;
+  }
+
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+
+  try {
+    const res  = await fetch(API_BASE + 'subscribe.php', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ email })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showToast('🎉 ' + data.message);
+      input.value = '';
+      showAdminNotification(email, 'New Subscriber');
+      if (data.total) {
+        const el = document.getElementById('subscriberCount');
+        if (el) el.textContent = data.total.toLocaleString() + '+ subscribed';
+      }
+    } else {
+      showToast('⚠️ ' + data.message);
+    }
+  } catch (err) {
+    // Server nahi mila — demo mode
+    showToast('✅ Subscribed! (Demo Mode — PHP server connect karein)');
+    input.value = '';
+    showAdminNotification(email, 'New Subscriber');
+  }
+
+  btn.textContent = 'Get Deals';
+  btn.disabled    = false;
+  btn.style.opacity = '1';
+}
+
+// ===== SUBMIT BOOKING → PHP Database =====
+async function submitBooking(e) {
+  e.preventDefault();
+  const btn   = document.getElementById('bkSubmitBtn');
+  const errEl = document.getElementById('bookingFormError');
+  errEl.style.display = 'none';
+
+  const name    = document.getElementById('bkName').value.trim();
+  const email   = document.getElementById('bkEmail').value.trim();
+  const phone   = document.getElementById('bkPhone').value.trim();
+  const date    = document.getElementById('bkDate').value;
+  const persons = document.getElementById('bkPersons').value;
+  const city    = document.getElementById('bkCity').value.trim();
+  const notes   = document.getElementById('bkNotes').value.trim();
+  const pkg     = document.getElementById('bookingPackageName').textContent;
+  const price   = document.getElementById('bookingPackagePrice').textContent;
+
+  // Frontend validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errEl.textContent = '❌ Sahih email address likhein';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (phone.replace(/\D/g,'').length < 10) {
+    errEl.textContent = '❌ Sahih phone number likhein (minimum 10 digits)';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = '⏳ Submitting...';
+  btn.disabled    = true;
+  btn.style.opacity = '0.7';
+
+  try {
+    const res  = await fetch(API_BASE + 'book.php', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ name, email, phone, date, persons, city, notes, package: pkg, price })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      closeBookingForm();
+      showToast('🎉 ' + data.message);
+      showAdminNotification(`${name} | ${phone}`, `📦 New Booking: ${pkg} (${persons})`);
+    } else {
+      errEl.textContent = '❌ ' + data.message;
+      errEl.style.display = 'block';
+    }
+  } catch (err) {
+    // Server nahi mila — demo mode
+    closeBookingForm();
+    showToast(`🎉 Booking recorded! ${name}, hum jald rabta karenge. (Demo Mode)`);
+    showAdminNotification(`${name} | ${phone}`, `📦 New Booking: ${pkg} (${persons})`);
+  }
+
+  btn.textContent = '✓ Confirm Booking';
+  btn.disabled    = false;
+  btn.style.opacity = '1';
+}
+
+// ===== ADMIN NOTIFICATION PANEL =====
+let notifCount = 0;
+
+function showAdminNotification(from, action) {
+  notifCount++;
+  const badge = document.getElementById('notifBadge');
+  if (badge) { badge.textContent = notifCount; badge.style.display = 'flex'; }
+
+  const list = document.getElementById('notifList');
+  if (list) {
+    // Remove empty state
+    const empty = list.querySelector('.notif-empty');
+    if (empty) empty.remove();
+
+    const item = document.createElement('div');
+    item.style.cssText = 'padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.06);animation:fadeInUp 0.3s ease;';
+    item.innerHTML = `
+      <div style="color:var(--gold);font-weight:600;font-size:0.83rem;">${action}</div>
+      <div style="color:rgba(255,255,255,0.75);margin-top:3px;font-size:0.82rem;">${from}</div>
+      <div style="color:rgba(255,255,255,0.35);font-size:0.72rem;margin-top:4px;">🕐 ${new Date().toLocaleTimeString('ur-PK')}</div>`;
+    list.prepend(item);
+  }
+}
+
+// Load notifications from server on page load
+async function loadServerNotifications() {
+  try {
+    const res  = await fetch(API_BASE + 'notifications.php');
+    const data = await res.json();
+    if (!data.success) return;
+
+    // Update stats in notification panel header if unread > 0
+    if (data.unread_count > 0) {
+      const badge = document.getElementById('notifBadge');
+      if (badge) { badge.textContent = data.unread_count; badge.style.display = 'flex'; }
+      notifCount = data.unread_count;
+    }
+
+    // Populate notification list
+    const list = document.getElementById('notifList');
+    if (list && data.notifications && data.notifications.length > 0) {
+      list.innerHTML = '';
+      data.notifications.forEach(n => {
+        const item = document.createElement('div');
+        const isUnread = !n.is_read;
+        item.style.cssText = `padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.06);${isUnread ? 'background:rgba(201,162,39,0.05);' : ''}`;
+        item.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;">
+            ${isUnread ? '<span style="width:7px;height:7px;background:var(--gold);border-radius:50%;flex-shrink:0;"></span>' : ''}
+            <div style="color:var(--gold);font-weight:600;font-size:0.83rem;">${n.title}</div>
+          </div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.78rem;margin-top:4px;">${n.message}</div>
+          <div style="color:rgba(255,255,255,0.35);font-size:0.72rem;margin-top:4px;">🕐 ${new Date(n.created_at).toLocaleString('en-PK')}</div>`;
+        list.appendChild(item);
+      });
+    }
+
+    // Update subscriber count
+    if (data.stats && data.stats.total_subscribers > 0) {
+      const el = document.getElementById('subscriberCount');
+      if (el) el.textContent = data.stats.total_subscribers.toLocaleString() + '+ subscribed';
+    }
+  } catch(e) {
+    // Server not connected — silent fail (demo mode)
+  }
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById('notifPanel');
+  if (!panel) return;
+  const isVisible = panel.style.display === 'block';
+  panel.style.display = isVisible ? 'none' : 'block';
+
+  if (!isVisible) {
+    // Mark as read on server
+    fetch(API_BASE + 'notifications.php?mark_read=1').catch(() => {});
+    const badge = document.getElementById('notifBadge');
+    if (badge) badge.style.display = 'none';
+    notifCount = 0;
+  }
+}
+
+function simulateDelay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Loader
+let prog = 0;
+const bar = document.getElementById('loaderProgress');
+const iv  = setInterval(() => {
+  prog += Math.random() * 15;
+  if (prog >= 100) {
+    prog = 100;
+    bar.style.width = '100%';
+    clearInterval(iv);
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      animateCounters();
+      loadServerNotifications();
+    }, 400);
+  } else {
+    bar.style.width = prog + '%';
+  }
+}, 120);
+
+renderDest();
+renderPackages();
+
+</script>
+</body>
+</html>
